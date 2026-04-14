@@ -1,4 +1,4 @@
--- Upsert single contact
+
 CREATE OR REPLACE PROCEDURE upsert_contact(fn VARCHAR, ln VARCHAR, ph VARCHAR)
 LANGUAGE plpgsql AS $$
 BEGIN
@@ -10,7 +10,7 @@ BEGIN
 END;
 $$;
 
--- Bulk insert with phone validation
+
 CREATE OR REPLACE PROCEDURE bulk_insert_contacts(data TEXT[][])
 LANGUAGE plpgsql AS $$
 DECLARE
@@ -30,7 +30,7 @@ BEGIN
 END;
 $$;
 
--- Delete by name or phone
+
 CREATE OR REPLACE PROCEDURE delete_contact(fn VARCHAR DEFAULT NULL, ln VARCHAR DEFAULT NULL, ph VARCHAR DEFAULT NULL)
 LANGUAGE plpgsql AS $$
 BEGIN

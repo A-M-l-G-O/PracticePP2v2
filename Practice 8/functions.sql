@@ -1,4 +1,4 @@
--- Search by pattern
+
 CREATE OR REPLACE FUNCTION search_contacts(p TEXT)
 RETURNS TABLE(id INT, first_name VARCHAR, last_name VARCHAR, phone VARCHAR) AS $$
 BEGIN
@@ -8,7 +8,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Paginated query
 CREATE OR REPLACE FUNCTION get_contacts_paginated(lim INT, off INT)
 RETURNS TABLE(id INT, first_name VARCHAR, last_name VARCHAR, phone VARCHAR) AS $$
 BEGIN

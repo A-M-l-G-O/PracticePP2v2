@@ -3,5 +3,5 @@ DB_CONFIG = {
     "port": 5432,
     "database": "phonebook",
     "user": "postgres",
-    "password": "your_password"   # Change this to your actual password
+    "password": "your_password"  
 }

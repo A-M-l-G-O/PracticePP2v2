@@ -1,16 +1,17 @@
 import pygame
 import sys
-from constants import *
+from racer import (W, H, FPS, WHITE, BLACK, RED, GRAY, DKGRAY, YELLOW,
+                   GREEN, ORANGE, CYAN, ROAD_COLOR, LINE_COLOR,
+                   ROAD_LEFT, ROAD_RIGHT, ROAD_W, CAR_COLORS)
 from persistence import load_leaderboard, load_settings, save_settings
-from constants   import CAR_COLORS
 
 
 pygame.font.init()
 
-_font_sm  = None
-_font_md  = None
-_font_lg  = None
-_font_xl  = None
+_font_sm = None
+_font_md = None
+_font_lg = None
+_font_xl = None
 
 
 def _fonts():
@@ -24,11 +25,11 @@ def _fonts():
 
 class Button:
     def __init__(self, rect, text, color=DKGRAY, text_color=WHITE):
-        self.rect       = pygame.Rect(rect)
-        self.text       = text
-        self.color      = color
+        self.rect        = pygame.Rect(rect)
+        self.text        = text
+        self.color       = color
         self.hover_color = tuple(min(c + 40, 255) for c in color)
-        self.text_color = text_color
+        self.text_color  = text_color
 
     def draw(self, surf):
         _fonts()
@@ -248,6 +249,7 @@ def game_over_screen(surf, clock, score, distance, coins) -> str:
         pygame.display.update()
         clock.tick(FPS)
 
+
 def draw_hud(surf, score, coins, distance, active_pu, pu_timer, shield):
     _fonts()
     s = _font_md.render(f"Score: {score}", True, WHITE)
@@ -278,7 +280,7 @@ def draw_hud(surf, score, coins, distance, active_pu, pu_timer, shield):
 
 
 def draw_road(surf, offset):
-    surf.fill((34, 100, 34))   
+    surf.fill((34, 100, 34))
     pygame.draw.rect(surf, ROAD_COLOR, (ROAD_LEFT, 0, ROAD_W, H))
     dash_h, gap = 40, 20
     total = dash_h + gap

@@ -1,7 +1,8 @@
 import pygame
 import random
 
-W, H = 400, 600
+W = 400
+H = 600
 FPS  = 60
 
 WHITE  = (255, 255, 255)

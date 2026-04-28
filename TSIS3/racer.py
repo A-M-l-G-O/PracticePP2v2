@@ -1,6 +1,41 @@
 import pygame
 import random
-from constants import *
+
+W, H = 400, 600
+FPS  = 60
+
+WHITE  = (255, 255, 255)
+BLACK  = (0,   0,   0)
+RED    = (220, 50,  50)
+BLUE   = (50,  50,  220)
+GRAY   = (100, 100, 100)
+DKGRAY = (60,  60,  60)
+YELLOW = (255, 220, 0)
+GREEN  = (50,  200, 50)
+ORANGE = (255, 140, 0)
+PURPLE = (180, 0,   220)
+CYAN   = (0,   220, 220)
+
+ROAD_COLOR  = (80,  80,  80)
+LINE_COLOR  = (240, 240, 240)
+ROAD_LEFT   = 80
+ROAD_RIGHT  = 320
+ROAD_W      = ROAD_RIGHT - ROAD_LEFT
+
+LANE_W       = ROAD_W // 3
+LANE_CENTERS = [
+    ROAD_LEFT + LANE_W // 2,
+    ROAD_LEFT + LANE_W + LANE_W // 2,
+    ROAD_LEFT + LANE_W * 2 + LANE_W // 2,
+]
+
+CAR_COLORS = {
+    "Blue":   (50,  50,  220),
+    "Red":    (220, 50,  50),
+    "Green":  (50,  180, 50),
+    "Purple": (160, 0,   200),
+    "Orange": (240, 120, 0),
+}
 
 
 def _wheels(surf, r):
@@ -17,10 +52,11 @@ class PlayerCar:
         self.color = color
         self.rect  = pygame.Rect(W // 2 - self.CW // 2,
                                  H - self.CH - 20, self.CW, self.CH)
-        self.base_speed   = 5
-        self.nitro_timer  = 0   
+        self.base_speed    = 5
+        self.nitro_timer   = 0
         self.shield_active = False
-        self.shield_hit   = False  
+        self.shield_hit    = False
+
     @property
     def speed(self):
         return self.base_speed * 2 if self.nitro_timer > 0 else self.base_speed
@@ -74,7 +110,6 @@ class EnemyCar:
 
 
 class OilSpill:
-    """Slows the player down for 2 s when driven over."""
     W, H_OBJ = 50, 25
     SLOW_FRAMES = 120
 
@@ -90,7 +125,6 @@ class OilSpill:
     def draw(self, surf):
         if not self.active:
             return
-        cx, cy = self.rect.center
         pygame.draw.ellipse(surf, (30, 30, 60), self.rect)
         for i, c in enumerate([(200, 0, 200, 80), (0, 200, 200, 80)]):
             pygame.draw.ellipse(surf, c[:3],
@@ -101,7 +135,6 @@ class OilSpill:
 
 
 class Pothole:
-    """Instantly stops you if hit (like a collision)."""
     SIZE = 30
 
     def __init__(self, speed, player_rect=None):
@@ -121,7 +154,6 @@ class Pothole:
 
 
 class SpeedBump:
-    """Visible stripe — slows player briefly on contact."""
     def __init__(self, speed, player_rect=None):
         self.rect  = pygame.Rect(ROAD_LEFT, -12, ROAD_W, 12)
         self.speed = speed
@@ -139,7 +171,6 @@ class SpeedBump:
 
 
 class NitroStrip:
-    """Green strip — gives a brief speed boost."""
     def __init__(self, speed, player_rect=None):
         self.rect  = pygame.Rect(ROAD_LEFT, -12, ROAD_W, 12)
         self.speed = speed
@@ -160,7 +191,7 @@ class NitroStrip:
 
 class Coin:
     R = 12
-    VALUE_TABLE = [(10, 5), (25, 3), (50, 1)]   
+    VALUE_TABLE = [(10, 5), (25, 3), (50, 1)]
 
     def __init__(self, speed, player_rect=None):
         x = _safe_x(self.R * 2, player_rect, top_spawn=True)
@@ -194,7 +225,7 @@ class Coin:
 
 class PowerUp:
     SIZE = 28
-    TIMEOUT = FPS * 7   
+    TIMEOUT = FPS * 7
 
     KINDS = {
         "Nitro":  {"color": ORANGE,          "label": "N"},
@@ -216,8 +247,7 @@ class PowerUp:
 
     def draw(self, surf):
         info = self.KINDS[self.kind]
-        # pulsing ring
-        pulse = abs(pygame.time.get_ticks() % 1000 - 500) / 500  # 0-1
+        pulse = abs(pygame.time.get_ticks() % 1000 - 500) / 500
         r_size = int(4 + pulse * 6)
         pygame.draw.rect(surf, info["color"],
                          self.rect.inflate(r_size, r_size), border_radius=8, width=2)
@@ -231,13 +261,12 @@ class PowerUp:
 
 
 def _safe_x(obj_w: int, player_rect, top_spawn: bool = True) -> int:
-    """Return an x that fits on the road and doesn't overlap the player."""
     for _ in range(10):
         x = random.randint(ROAD_LEFT + 5, ROAD_RIGHT - obj_w - 5)
         if player_rect is None:
             return x
         if top_spawn:
-            return x   
+            return x
         if not pygame.Rect(x, 0, obj_w, 40).colliderect(player_rect):
             return x
     return ROAD_LEFT + 5

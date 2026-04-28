@@ -2,9 +2,10 @@ import pygame
 import sys
 import random
 
-from constants    import *
+from racer        import (W, H, FPS, CAR_COLORS,
+                          PlayerCar, EnemyCar, Coin,
+                          OilSpill, Pothole, SpeedBump, NitroStrip, PowerUp)
 from persistence  import load_settings, save_score, DIFFICULTY_PARAMS
-from racer        import PlayerCar, EnemyCar, Coin, OilSpill, Pothole, SpeedBump, NitroStrip, PowerUp
 from ui           import (draw_road, draw_hud, game_over_screen,
                           leaderboard_screen, main_menu, settings_screen,
                           username_screen)
@@ -15,8 +16,8 @@ pygame.display.set_caption("Racer  –  TSIS 3")
 clock  = pygame.time.Clock()
 
 
-NITRO_DURATION  = FPS * 4   # 4 s
-SHIELD_INFINITE = -1        # no timer — lasts until hit
+NITRO_DURATION  = FPS * 4
+SHIELD_INFINITE = -1
 
 
 def apply_powerup(kind, player, active_pu_ref):
@@ -28,41 +29,39 @@ def apply_powerup(kind, player, active_pu_ref):
         player.shield_active = True
         return "Shield", SHIELD_INFINITE
     elif kind == "Repair":
-        # Repair: instant — just award bonus score (game loop handles it)
-        return "Repair", FPS * 1   # show for 1 s then clear
+        return "Repair", FPS * 1
     return None, 0
 
 
 def run_game(username: str, settings: dict) -> str:
     """Run one game session. Returns 'retry' or 'menu'."""
 
-    diff       = settings.get("difficulty", "Normal")
-    params     = DIFFICULTY_PARAMS[diff]
-    car_color  = CAR_COLORS[settings.get("car_color", "Blue")]
+    diff      = settings.get("difficulty", "Normal")
+    params    = DIFFICULTY_PARAMS[diff]
+    car_color = CAR_COLORS[settings.get("car_color", "Blue")]
 
-    player        = PlayerCar(color=car_color)
-    enemies       = []
-    coins         = []
-    obstacles     = []   
-    powerups      = []
+    player    = PlayerCar(color=car_color)
+    enemies   = []
+    coins     = []
+    obstacles = []
+    powerups  = []
 
     score         = 0
     coin_count    = 0
-    distance      = 0     
+    distance      = 0
     road_offset   = 0
 
-    base_speed    = params["base_speed"]
-    enemy_interval= params["enemy_interval"]
-    coin_interval = params["coin_interval"]
-    obs_interval  = 200
-    pu_interval   = 400
+    base_speed     = params["base_speed"]
+    enemy_interval = params["enemy_interval"]
+    coin_interval  = params["coin_interval"]
+    obs_interval   = 200
+    pu_interval    = 400
 
     enemy_timer = coin_timer = obs_timer = pu_timer_spawn = 0
 
     active_pu_name  = None
     active_pu_timer = 0
-
-    slow_timer = 0
+    slow_timer      = 0
 
     game_active = True
 
@@ -78,8 +77,8 @@ def run_game(username: str, settings: dict) -> str:
 
         if not game_active:
             draw_road(screen, road_offset)
-            for e in enemies: e.draw(screen)
-            for c in coins:   c.draw(screen)
+            for e in enemies:   e.draw(screen)
+            for c in coins:     c.draw(screen)
             for o in obstacles: o.draw(screen)
             for p in powerups:  p.draw(screen)
             player.draw(screen)
@@ -228,7 +227,7 @@ def main():
                 result = run_game(username, settings)
                 if result == "retry":
                     continue
-                break  
+                break
 
 
 if __name__ == "__main__":
